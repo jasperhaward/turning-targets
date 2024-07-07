@@ -1,12 +1,15 @@
 from fastapi import FastAPI, HTTPException
-from gpiozero import LED
+import gpiod
 from .config import DISCIPLINES_DATABASE
 from .models import Discipline, DisciplineParameters
 from .disciplines import DisciplinesStore
 
 app = FastAPI()
 
-led = LED(4)
+led_pin = 4
+chip = gpiod.Chip('gpiochip4')
+led_line = chip.get_line(led_pin)
+led_line.request(consumer="LED", type=gpiod.LINE_REQ_DIR_OUT)
 
 disciplines = DisciplinesStore(DISCIPLINES_DATABASE)
 
@@ -28,7 +31,7 @@ def start_discipline(id: int) -> Discipline:
   if discipline is None:
     raise HTTPException(status_code=404, detail="Discipline not found")
 
-  led.on()
+  led_line.set_value(1)
 
   return discipline
 
@@ -40,6 +43,6 @@ def stop_discipline(id: int) -> Discipline:
   if discipline is None:
     raise HTTPException(status_code=404, detail="Discipline not found")
 
-  led.off()
+  led_line.set_value(0)
 
   return discipline

@@ -7,7 +7,7 @@ cd backend
 if [ ! -d "$VENV" ]; then
     echo "virtual environment does not exist, performing first time setup"
     chmod -R 777 .
-    python -m venv "$VENV"
+    python -m venv "$VENV" --system-site-packages
 fi
 
 source .venv/bin/activate
