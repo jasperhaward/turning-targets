@@ -3,6 +3,9 @@ from .mocks import MockGpiod
 try:
   import gpiod  # type: ignore
 except ImportError:
+  import warnings
+
+  warnings.warn("Mocking GPIOD module, no gpiod install found")
   gpiod = MockGpiod()
 
 
